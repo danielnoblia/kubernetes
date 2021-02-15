@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxidized
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxidized
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: oxidized
+    spec:
+      containers:
+      - image: oxidized/oxidized
+        name: oxidized
+        env:
+        - name: CONFIG_RELOAD_INTERVAL
+          value: '600'
+        ports:
+        - containerPort: 8888
+          name: oxidized
+        volumeMounts:
+        - name: oxidized-persistent-storage
+          mountPath: /root/.config/oxidized
+      volumes:
+      - name: oxidized-persistent-storage
+        persistentVolumeClaim:
+          claimName: oxidized-pv-claim

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: phpipam
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    cert-manager.io/issuer-name: ca-issuer
+spec:
+  tls:
+  - hosts:
+    - phpipam.ittlabb.net
+    secretName: phpipam-cert-tls
+  rules:
+  - host: phpipam.ittlabb.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: phpipam
+          servicePort: 80

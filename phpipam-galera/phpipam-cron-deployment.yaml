@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpipam-cron
+  labels:
+    app: phpipam
+spec:
+  selector:
+    matchLabels:
+      app: phpipam
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: phpipam
+    spec:
+      containers:
+      - image: phpipam/phpipam-cron:latest
+        name: phpipam-cron
+        env:
+        - name: IPAM_DATABASE_HOST
+          value: mariadb-galera
+        - name: IPAM_DATABASE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: cron-pass
+              key: password
+        - name: SCAN_INTERVAL
+          value: '1h'
+        - name: TZ
+          value: 'Europe/Stockholm'

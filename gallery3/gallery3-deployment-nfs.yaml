@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gallery3
+  labels:
+    app: gallery3
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: gallery3
+    tier: frontend
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gallery3-pv-claim
+  labels:
+    app: gallery3
+spec:
+  storageClassName: managed-nfs-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gallery3
+  labels:
+    app: gallery3
+spec:
+  selector:
+    matchLabels:
+      app: gallery3
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gallery3
+        tier: frontend
+    spec:
+      containers:
+      - image: bwdutton/gallery3
+        name: gallery3
+        env:
+        - name: TZ
+          value: 'Europe/Stockholm'
+        ports:
+        - containerPort: 80
+          name: gallery3
+        volumeMounts:
+        - name: gallery3-persistent-storage
+          mountPath: /var/www/var
+      volumes:
+      - name: gallery3-persistent-storage
+        persistentVolumeClaim:
+          claimName: gallery3-pv-claim

@@ -1,0 +1,12 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name:  phpipam-cert
+  namespace: ittlabb
+spec:
+  dnsNames:
+    - phpipam.ittlabb.net
+  secretName: phpipam-cert-tls
+  issuerRef:
+    name: ca-issuer

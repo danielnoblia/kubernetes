@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpipam
+  labels:
+    app: phpipam
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: phpipam
+    tier: frontend
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: phpipam-pv-claim
+  labels:
+    app: phpipam
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpipam
+  labels:
+    app: phpipam
+spec:
+  selector:
+    matchLabels:
+      app: phpipam
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: phpipam
+        tier: frontend
+    spec:
+      containers:
+      - image: phpipam/phpipam-www:latest
+        name: phpipam
+        env:
+        - name: IPAM_DATABASE_HOST
+          value: mariadb-galera
+        - name: IPAM_DATABASE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ipam-pass
+              key: password
+        - name: TZ
+          value: 'Europe/Stockholm'
+        ports:
+        - containerPort: 80
+          name: phpipam
+        volumeMounts:
+        - name: phpipam-persistent-storage
+          mountPath: /phpipam/css/images/logo
+      volumes:
+      - name: phpipam-persistent-storage
+        persistentVolumeClaim:
+          claimName: phpipam-pv-claim

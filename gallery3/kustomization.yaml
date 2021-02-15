@@ -1,0 +1,4 @@
+resources:
+- gallery3-deployment-nfs.yaml
+- gallery3-ingress-tls.yaml
+- gallery3-issuer-CA.yaml

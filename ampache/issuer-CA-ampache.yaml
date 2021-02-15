@@ -1,0 +1,12 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name:  ampache-cert
+  namespace: ittlabb
+spec:
+  dnsNames:
+    - ampache.ittlabb.net
+  secretName: ampache-cert-tls
+  issuerRef:
+    name: ca-issuer

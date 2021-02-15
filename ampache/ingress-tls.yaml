@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ampache
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    cert-manager.io/issuer-name: ca-issuer
+spec:
+  tls:
+  - hosts:
+    - ampache.ittlabb.net
+    secretName: ampache-cert-tls
+  rules:
+  - host: ampache.ittlabb.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ampache
+          servicePort: 80

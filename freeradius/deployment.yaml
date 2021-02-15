@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freeradius
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freeradius
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: freeradius
+    spec:
+      containers:
+      - image: freeradius/freeradius-server
+        name: freeradius
+        ports:
+        - containerPort: 1812
+          protocol: UDP
+        - containerPort: 1813
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /etc/raddb/users
+          name: freeradius-users
+          subPath: users
+
+        - mountPath: /etc/raddb/clients.conf
+          name: freeradius-clients-conf
+          subPath: clients.conf
+
+        - mountPath: /etc/raddb/mods-available/eap
+          name: freeradius-eap
+          subPath: eap
+
+        - mountPath: /etc/raddb/certs/ittlabb-ca
+          name: ittlabb-certs-ca
+
+        - mountPath: /etc/raddb/certs/ittlabb
+          name: ittlabb-certs 
+
+        - mountPath: /etc/raddb/certs/letsencrypt
+          name: letsencrypt-certs
+      volumes:
+      - name: freeradius-users
+        configMap:
+          name: freeradius-users
+
+      - name: freeradius-clients-conf
+        configMap:
+          name: freeradius-clients.conf
+
+      - name: freeradius-eap
+        configMap:
+          name: freeradius-eap
+
+      - name: ittlabb-certs-ca
+        secret:
+          secretName: kuberadius-ca-cert-tls
+
+      - name: ittlabb-certs
+        secret:
+          secretName: kuberadius-cert-tls
+
+      - name: letsencrypt-certs
+        secret:
+          secretName: freeradius-noblia-se-tls

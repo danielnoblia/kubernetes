@@ -1,0 +1,6 @@
+resources:
+- secrets.yaml
+- phpipam-deployment.yaml
+- phpipam-cron-deployment.yaml
+- phpipam-ingress-tls.yaml
+- phpipam-issuer-CA.yaml

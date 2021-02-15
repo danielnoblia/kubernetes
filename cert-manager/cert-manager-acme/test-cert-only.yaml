@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: noblia-se
+  namespace: default
+spec:
+  secretName: noblia-se-tls
+  issuerRef:
+    name: letsencrypt-staging
+  commonName: test.noblia.se
+  dnsNames:
+  - test.noblia.se

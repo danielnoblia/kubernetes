@@ -1,0 +1,12 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name:  gallery3-cert
+  namespace: ittlabb
+spec:
+  dnsNames:
+    - gallery3.ittlabb.net
+  secretName: gallery3-cert-tls
+  issuerRef:
+    name: ca-issuer

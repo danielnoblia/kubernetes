@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ampache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ampache
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ampache
+    spec:
+      containers:
+      - image: ampache/ampache:nosql
+        name: ampache
+        ports:
+        - containerPort: 80
+          name: ampache
+        volumeMounts:
+        - name: ampache-config-storage
+          mountPath: /var/www/config
+        - name: ampache-log-storage
+          mountPath: /var/log/ampache
+        - name: ampache-media-storage
+          mountPath: /media
+      volumes:
+      - name: ampache-config-storage
+        persistentVolumeClaim:
+          claimName: ampache-config-claim
+      - name: ampache-log-storage
+        persistentVolumeClaim:
+          claimName: ampache-log-claim 
+      - name: ampache-media-storage
+        persistentVolumeClaim:
+          claimName: ampache-media-claim
+            
