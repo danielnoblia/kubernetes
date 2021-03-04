@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daloradius
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: daloradius
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: daloradius
+    spec:
+      containers:
+      - image: danielnoblia/daloradius:1.0
+        name: daloradius
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: daloradius-configmap
+              key: mysql_host
+
+        - name: MYSQL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: daloradius-configmap
+              key: mysql_port
+
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: daloradius-configmap
+              key: mysql_database
+
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: daloradius-db-pass
+              key: mysql_user
+
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: daloradius-db-pass
+              key: mysql_password
+
+        ports:
+        - containerPort: 80
+          name: daloradius
+        volumeMounts:
+        - name: daloradius-persistent-storage
+          mountPath: /data
+      volumes:
+      - name: daloradius-persistent-storage
+        persistentVolumeClaim:
+          claimName: daloradius-pv-claim

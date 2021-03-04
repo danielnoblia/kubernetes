@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mn-wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mn-wordpress
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mn-wordpress
+    spec:
+      containers:
+      - image: wordpress
+        name: mn-wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mn-wordpress-configmap
+              key: mysql_host
+
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: mn-wordpress-configmap
+              key: mysql_database
+
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mn-wordpress-db-pass
+              key: mysql_user
+
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mn-wordpress-db-pass
+              key: mysql_password
+
+        ports:
+        - containerPort: 80
+          name: wordpress
+        volumeMounts:
+        - name: mn-wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: mn-wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: mn-wordpress-pv-claim

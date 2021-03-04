@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: mn-wordpress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    cert-manager.io/issuer-name: ca-issuer
+spec:
+  tls:
+  - hosts:
+    - mn-wordpress.ittlabb.net
+    secretName: mn-wordpress-cert-tls
+  rules:
+  - host: mn-wordpress.ittlabb.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mn-wordpress
+          servicePort: 80

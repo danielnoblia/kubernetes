@@ -1,0 +1,12 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name:  mn-wordpress-cert
+  namespace: ittlabb
+spec:
+  dnsNames:
+    - mn-wordpress.ittlabb.net
+  secretName: mn-wordpress-cert-tls
+  issuerRef:
+    name: ca-issuer
