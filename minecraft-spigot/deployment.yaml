@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-spigot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-spigot
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minecraft-spigot
+    spec:
+      containers:
+      - image: danielnoblia/minecraft-spigot
+        name: minecraft-spigot
+        env:
+        - name: REV
+          value: "latest"
+        - name: "EULA"
+          value: "TRUE"
+        - name: "WORLDBORDER"
+          value: "false"
+        - name: "DYNMAP"
+          value: "true"
+        - name: "ESSENTIALS"
+          value: "true"
+        - name: OPS
+          value: "danielnoblia"
+        ports:
+        - containerPort: 25565
+          protocol: TCP
+        - containerPort: 8123
+          protocol: TCP
+        volumeMounts:
+        - name: mc-data-storage
+          mountPath: /minecraft
+      volumes:
+      - name: mc-data-storage
+        persistentVolumeClaim:
+          claimName: mc-data-claim

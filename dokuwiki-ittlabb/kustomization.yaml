@@ -1,0 +1,8 @@
+resources:
+- claim.yaml
+- configmap.yaml
+- secret.yaml
+- deployment.yaml
+- issuer-CA.yaml
+- ingress-tls.yaml
+- service.yaml

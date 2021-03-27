@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dokuwiki-configmap
+data:
+  dokuwiki_username: "admin"
+  dokuwiki_full_name: "Daniel Noblia"
+  dokuwiki_email: "daniel.noblia@gmail.com"
+  dokuwiki_wiki_name: "K8S Wiki"
+  php_expose_php: "On"
+  php_max_execution_time: "30"
+  php_max_input_time: "60"
+  php_max_input_vars: "1000"
+  php_memory_limit: "128M"
+  php_post_max_size: "40M"
+  php_upload_max_filesize: "20M"

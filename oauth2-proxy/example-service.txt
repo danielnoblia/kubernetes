@@ -1,0 +1,3 @@
+kubectl expose  --name example-service --port=80 --target-port=80 --type=NodePort
+kubectl expose deployment simple-http --name example-service --port=80 --target-port=80 --type=NodePort
+

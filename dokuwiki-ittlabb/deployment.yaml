@@ -1,0 +1,106 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokuwiki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dokuwiki
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dokuwiki
+    spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+      - image: bitnami/dokuwiki:latest
+        name: dokuwiki
+        env:
+        - name: DOKUWIKI_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dokuwiki-secrets
+              key: dokuwiki_username
+
+        - name: DOKUWIKI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dokuwiki-secrets
+              key: dokuwiki_password
+
+        - name: DOKUWIKI_FULL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: dokuwiki_full_name
+
+        - name: DOKUWIKI_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: dokuwiki_email
+
+        - name: DOKUWIKI_WIKI_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: dokuwiki_wiki_name
+
+        - name: PHP_EXPOSE_PHP
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_expose_php
+
+        - name: PHP_MAX_EXECUTION_TIME
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_max_execution_time
+
+        - name: PHP_MAX_INPUT_TIME
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_max_input_time
+
+        - name: PHP_MAX_INPUT_VARS
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_max_input_vars
+
+        - name: PHP_MEMORY_LIMIT
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_memory_limit
+
+        - name: PHP_POST_MAX_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_post_max_size
+
+        - name: PHP_UPLOAD_MAX_FILESIZE
+          valueFrom:
+            configMapKeyRef:
+              name: dokuwiki-configmap
+              key: php_upload_max_filesize
+
+        ports:
+        - containerPort: 8080
+          name: dokuwiki
+        volumeMounts:
+        - name: dokuwiki-persistent-storage
+          mountPath: /bitnami/dokuwiki
+      volumes:
+      - name: dokuwiki-persistent-storage
+        persistentVolumeClaim:
+          claimName: dokuwiki-pv-claim

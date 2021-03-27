@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-oauth2
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-oauth2
+  template:
+    metadata:
+      labels:
+        app: nginx-oauth2
+    spec:
+      containers:
+      - name: nginx-oauth2
+        image: nginx
+        ports:
+          - containerPort: 80
+      - name: oauth2-proxy
+        image: bitnami/oauth2-proxy
+        args:
+        - --provider=github
+        - --email-domain=*
+        - --upstream=file:///dev/null
+        - --http-address=0.0.0.0:4180
+        - --upstream=http://127.0.0.1:80
+        #        - --whitelist-domain=.noblia.se
+        #        - --cookie-domain=.noblia.se
+        # - --cookie-expire duration: expire timeframe for cookie (default 168h0m0s)
+        # - --cookie-name string: the name of the cookie that the oauth_proxy creates (default "_oauth2_proxy")
+        # - --cookie-refresh duration: refresh the cookie after this duration; 0 to disable
+        # - --cookie-secret string: the seed string for secure cookies (optionally base64 encoded)
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: oauth-proxy-secret
+              key: github-client-id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth-proxy-secret
+              key: github-client-secret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth-proxy-secret
+              key: cookie-secret
+        ports:
+        - containerPort: 4180
+          protocol: TCP
