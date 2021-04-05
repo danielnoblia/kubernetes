@@ -30,8 +30,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: kube-demo-frontend
-        imagePullPolicy: Never
+        image: danielnoblia/kube-demo-frontend:1.0
+        imagePullPolicy: Always
         env:
         - name: KEYCLOAK_URL
           value: https://KEYCLOAK_HOST/auth

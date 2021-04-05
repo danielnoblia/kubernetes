@@ -28,14 +28,20 @@ spec:
       labels:
         app: keycloak
     spec:
+      securityContext:
+        # behövs annars kan keycloak inte skapa beständig data
+        runAsUser: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
       containers:
       - name: keycloak
         image: jboss/keycloak
         env:
-        - name: KEYCLOAK_USER
-          value: "admin"
-        - name: KEYCLOAK_PASSWORD
-          value: "admin"
+          # Efter initial setup avaktiverar du  admin-block
+          #- name: KEYCLOAK_USER
+          #value: "admin"
+          #- name: KEYCLOAK_PASSWORD
+          #value: "admin"
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         ports:
@@ -49,7 +55,7 @@ spec:
             port: 8080
         volumeMounts:
         - name: keycloak-persistent-storage
-          mountPath: /var/lib/keycloak/data
+          mountPath: /opt/jboss/keycloak/standalone/data
       volumes:
       - name: keycloak-persistent-storage
         persistentVolumeClaim:

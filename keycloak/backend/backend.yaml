@@ -12,6 +12,7 @@ spec:
   selector:
     app: backend
   type: LoadBalancer
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,8 +31,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: kube-demo-backend
-        imagePullPolicy: Never
+        image: danielnoblia/kube-demo-backend:1.0
+        imagePullPolicy: Always
         env:
         - name: KEYCLOAK_URL
           value: https://KEYCLOAK_HOST/auth
@@ -42,3 +43,4 @@ spec:
           httpGet:
             path: /public
             port: 8080
+

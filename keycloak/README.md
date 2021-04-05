@@ -1,4 +1,7 @@
 # Keycloak Kubernetes Demo
+Jag har använt det här projektet för att lära mig mera av keycloak. Originalet
+är här: https://github.com/stianst/demo-kubernetes
+Jag har ändrat vissa delar av det som inte fungerar. Jag kör även i Kubernetes.
 
 This demo assumes you have minikube installed with the ingress addon enabled.
 

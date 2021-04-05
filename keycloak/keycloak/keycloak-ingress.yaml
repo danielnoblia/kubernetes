@@ -1,16 +1,25 @@
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: keycloak
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"
+    cert-manager.io/issue-temporary-certificate: "true"
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    
 spec:
-  tls:
-    - hosts:
-      - KEYCLOAK_HOST
   rules:
-  - host: KEYCLOAK_HOST
+  - host: keycloak.noblia.se
     http:
       paths:
       - backend:
           serviceName: keycloak
           servicePort: 8080
-
+        path: /
+  tls:
+  - hosts:
+    - keycloak.noblia.se
+    secretName: keycloak-tls

@@ -1,3 +1,0 @@
-export KEYCLOAK_HOST=keycloak.noblia.se
-export BACKEND_HOST=backend.noblia.se
-export FRONTEND_HOST=frontend.noblia.se
